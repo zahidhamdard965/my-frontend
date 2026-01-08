@@ -8,14 +8,7 @@ function TutorialsList() {
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [searchTitle, setSearchTitle] = useState("");
 
-    useEffect(() => {
-        retrieveTutorials();
-    }, []);
-
-    const onChangeSearchTitle = (e) => {
-        setSearchTitle(e.target.value);
-    };
-
+    // ✅ FIRST declare function
     const retrieveTutorials = () => {
         TutorialService.getAll()
             .then((response) => {
@@ -25,6 +18,15 @@ function TutorialsList() {
             .catch((e) => {
                 console.log(e);
             });
+    };
+
+    // ✅ THEN use it
+    useEffect(() => {
+        retrieveTutorials();
+    }, []);
+
+    const onChangeSearchTitle = (e) => {
+        setSearchTitle(e.target.value);
     };
 
     const refreshList = () => {
@@ -64,7 +66,7 @@ function TutorialsList() {
 
     return (
         <div className="flex flex-col lg:flex-row gap-8">
-            {/* LEFT COLUMN: SEARCH + LIST */}
+            {/* LEFT COLUMN */}
             <div className="flex-1">
                 <div className="flex mb-4">
                     <input
@@ -87,12 +89,12 @@ function TutorialsList() {
                     {tutorials &&
                         tutorials.map((tutorial, index) => (
                             <li
+                                key={index}
                                 className={
                                     "px-4 py-2 cursor-pointer " +
                                     (index === currentIndex ? "bg-blue-100" : "")
                                 }
                                 onClick={() => setActiveTutorial(tutorial, index)}
-                                key={index}
                             >
                                 {tutorial.title}
                             </li>
@@ -107,19 +109,22 @@ function TutorialsList() {
                 </button>
             </div>
 
-            {/* RIGHT COLUMN: DETAILS */}
+            {/* RIGHT COLUMN */}
             <div className="flex-1">
                 {currentTutorial ? (
                     <div className="p-4 bg-white rounded shadow">
                         <h4 className="font-bold text-xl mb-2">Tutorial</h4>
+
                         <div className="mb-2">
                             <strong>Title: </strong>
                             {currentTutorial.title}
                         </div>
+
                         <div className="mb-2">
                             <strong>Description: </strong>
                             {currentTutorial.description}
                         </div>
+
                         <div className="mb-2">
                             <strong>Status: </strong>
                             {currentTutorial.published ? "Published" : "Pending"}
@@ -133,9 +138,7 @@ function TutorialsList() {
                         </Link>
                     </div>
                 ) : (
-                    <div>
-                        <p>Please click on a Tutorial...</p>
-                    </div>
+                    <p>Please click on a Tutorial...</p>
                 )}
             </div>
         </div>
